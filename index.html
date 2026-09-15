@@ -32,7 +32,7 @@ html, body {
   overflow: hidden;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
-  touch-action: non;
+  touch-action: none;
 }
 
   #stage{
@@ -168,6 +168,8 @@ html, body {
     z-index:50;
   }
 </style>
+<!-- کتابخانه افکت Confetti -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
 
@@ -264,7 +266,7 @@ const pages = [
     <li>Your constant whistling, regardless of time, place, or situation</li>
     <li>Our latest accomplishment: the quiet freedom of breaking wind in each other&rsquo;s company, with neither shame nor judgment.</li>
   </ol>
-`},
+`}
 ];
 
 // ---------- build cards ----------
@@ -305,6 +307,47 @@ const progress = document.getElementById('progress');
 const hint = document.getElementById('hint');
 let current = 0;
 const STACK_DEPTH = 3;
+let effectTriggered = false; // جلوگیری از اجرای تکراری انیمیشن
+
+// تابع اختصاصی افکت کارت پایانی
+function triggerEndCardEffects() {
+  if (typeof confetti !== 'function') return;
+
+  // ۱. انیمیشن اصلی بارش confetti
+  confetti({
+    particleCount: 80,
+    spread: 70,
+    origin: { y: 0.6 },
+    colors: ['#c2637a', '#8a3a52', '#ffb703', '#ffffff']
+  });
+
+  // ۲. انیمیشن شلیک جانبی متناوب (۳ ثانیه)
+  const duration = 3 * 1000;
+  const animationEnd = Date.now() + duration;
+
+  const heartInterval = setInterval(() => {
+    const timeLeft = animationEnd - Date.now();
+    if (timeLeft <= 0) {
+      return clearInterval(heartInterval);
+    }
+
+    confetti({
+      particleCount: 3,
+      angle: 60,
+      spread: 55,
+      origin: { x: 0, y: 0.7 },
+      colors: ['#c2637a', '#ff4d6d', '#8a3a52']
+    });
+
+    confetti({
+      particleCount: 3,
+      angle: 120,
+      spread: 55,
+      origin: { x: 1, y: 0.7 },
+      colors: ['#c2637a', '#ff4d6d', '#8a3a52']
+    });
+  }, 250);
+}
 
 function exitTransform(dir) {
   return `translateX(${dir * 160}%) translateY(22px) rotate(${dir * 16}deg)`;
@@ -349,6 +392,16 @@ function layout() {
   nextBtn.textContent = current === 0 ? "open ›" : (current === cards.length ? "the end" : "next ›");
   progress.textContent = current === 0 ? "" : `card ${current} of ${cards.length}`;
   hint.style.display = current === cards.length ? 'none' : 'block';
+
+  // بررسی رسیدن به کارت آخر و اجرای انیمیشن
+  if (current === sequence.length - 1) {
+    if (!effectTriggered) {
+      triggerEndCardEffects();
+      effectTriggered = true;
+    }
+  } else {
+    effectTriggered = false; // ریست شدن حالت در صورت برگشت به کارت‌های قبل
+  }
 }
 
 function dismissTop(direction) {
