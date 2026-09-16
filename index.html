@@ -8,167 +8,186 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Caveat:wght@600&display=swap" rel="stylesheet">
 <style>
   :root {
-  --rose: #c2637a;
-  --rose-dark: #8a3a52;
-  --paper: #fdf1f4;
-  --ink: #4a2e34;
-  --page-bg: url("bg.JPG");
-}
-
-* {
-  box-sizing: border-box;
-}
-
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  background-color: #f2e6e9;
-  background-image: var(--page-bg);
-  background-size: cover;
-  background-position: center;
-  font-family: 'Cormorant Garamond', serif;
-  color: var(--ink);
-  overflow: hidden;
-  -webkit-tap-highlight-color: transparent;
-  user-select: none;
-  touch-action: none;
-}
-
-  #stage{
-    position:relative;
-    width:100%;
-    height:100%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    --rose: #c2637a;
+    --rose-dark: #8a3a52;
+    --paper: #fdf1f4; /* رنگ کاغذی صورتی ملایم و مات */
+    --ink: #4a2e34;
+    --page-bg: url("bg.JPG");
   }
 
-  #deck{
-    position:relative;
-    width:min(92vw, 460px);
-    height:min(92vw*1.28, 575px);
+  * {
+    box-sizing: border-box;
   }
 
-  .card{
-    position:absolute;
-    inset:0;
-    border-radius:16px;
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    /* عکس پس‌زمینه فقط روی کل صفحه اصلی قرار می‌گیرد */
+    background-color: #f2e6e9;
+    background-image: var(--page-bg);
+    background-size: cover;
+    background-position: center;
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--ink);
+    overflow: hidden;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    touch-action: none;
+  }
+
+  #stage {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #deck {
+    position: relative;
+    width: min(92vw, 460px);
+    height: min(92vw * 1.28, 575px);
+  }
+
+  /* کارت‌ها کاملاً مات و کاغذی هستند، بدون عکس پس‌زمینه */
+  .card {
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
     box-shadow: 0 14px 34px rgba(120,50,70,.22);
-    overflow:hidden;
-    display:flex;
-    flex-direction:column;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
     background-color: var(--paper);
-    background-image: var(--page-bg);
-    background-size: cover;
-    background-position: center;
-    transition: transform 850ms cubic-bezier(.22,.68,.18,1), opacity 600ms ease;
-    will-change: transform;
+    background-image: none !important; /* لغو تمام تصاویر روی بدنه کارت */
+    transition: transform 600ms cubic-bezier(.22,.68,.18,1), opacity 500ms ease;
+    will-change: transform, opacity;
   }
-  .card.dragging{ transition: none; }
-  .card.top{ cursor: grab; }
-  .card.top:active{ cursor: grabbing; }
+  
+  .card.dragging { 
+    transition: none !important; 
+  }
+  .card.top { 
+    cursor: grab; 
+  }
+  .card.top:active { 
+    cursor: grabbing; 
+  }
 
-  .cover-face{
-    background-image: var(--page-bg);
-    background-size: cover;
-    background-position: center;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+  .cover-face {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
   }
-  .cover-number{
-    font-family:'Cormorant Garamond', serif;
+  .cover-number {
+    font-family: 'Cormorant Garamond', serif;
     font-size: clamp(64px, 22vw, 120px);
     color: var(--rose-dark);
-    opacity:.9;
-  }
-  .closing-face{
-    background-size: cover;
-    background-position: center;
+    opacity: .9;
   }
 
-  .page-inner{
-    flex:1;
-    padding: 10% 9%;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    overflow-y:auto;
-    -webkit-overflow-scrolling:touch;
-    scrollbar-width: thin;
+  /* کارت آخر همچنان عکس خودش را دارد */
+  .closing-face {
+    flex: 1;
+    background-image: url('last.JPG');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
   }
-  .page-inner::-webkit-scrollbar{ width:4px; }
-  .page-inner::-webkit-scrollbar-thumb{ background: rgba(194,99,122,.35); border-radius:4px; }
-  .page-inner p{
+
+  /* متن‌ها مستقیماً روی صفحه کاغذی قرار می‌گیرند */
+  .page-inner {
+    flex: 1;
+    padding: 10% 9% 0 9%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    background: transparent;
+  }
+  .page-inner::-webkit-scrollbar { width: 4px; }
+  .page-inner::-webkit-scrollbar-thumb { background: rgba(194,99,122,.35); border-radius: 4px; }
+  
+  .page-inner p {
     margin: 0 0 0.85em 0;
     font-size: clamp(14.5px, 3.9vw, 17px);
-    line-height:1.5;
+    line-height: 1.5;
   }
-  .page-inner ol{
+  .page-inner ol {
     margin: 0.3em 0 0 0;
     padding-left: 1.15em;
   }
-  .page-inner li{
+  .page-inner li {
     font-size: clamp(14px, 3.6vw, 16px);
-    line-height:1.45;
-    margin-bottom:.4em;
+    line-height: 1.45;
+    margin-bottom: .4em;
   }
-  .page-num{
-    text-align:center;
-    font-family:'Caveat', cursive;
+
+  .page-num {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Caveat', cursive;
     color: var(--rose);
-    font-size:15px;
-    padding-bottom: 4%;
+    font-size: 16px;
+    flex-shrink: 0;
+    background: transparent;
   }
 
-  #controls{
-    position:fixed;
-    left:0; right:0; bottom: 4%;
-    display:flex;
-    justify-content:center;
-    gap:14px;
-    z-index:50;
+  #controls {
+    position: fixed;
+    left: 0; right: 0; bottom: 4%;
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    z-index: 50;
   }
-  #controls button{
-    font-family:'Cormorant Garamond', serif;
-    font-size:14px;
-    letter-spacing:.03em;
-    border:none;
-    background: rgba(255,255,255,.8);
+  #controls button {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 14px;
+    letter-spacing: .03em;
+    border: none;
+    background: rgba(255,255,255,.85);
     color: var(--rose-dark);
-    padding:9px 18px;
-    border-radius:999px;
+    padding: 9px 18px;
+    border-radius: 999px;
     box-shadow: 0 4px 14px rgba(120,50,70,.18);
+    cursor: pointer;
   }
-  #controls button:disabled{ opacity:.35; }
-  #controls button:active{ transform: scale(.96); }
+  #controls button:disabled { opacity: .35; cursor: default; }
+  #controls button:active:not(:disabled) { transform: scale(.96); }
 
-  #progress{
-    position:fixed;
+  #progress {
+    position: fixed;
     top: 4%;
-    left:0; right:0;
-    text-align:center;
-    font-family:'Caveat', cursive;
+    left: 0; right: 0;
+    text-align: center;
+    font-family: 'Caveat', cursive;
     color: var(--rose-dark);
-    font-size:16px;
-    z-index:50;
-    opacity:.8;
+    font-size: 16px;
+    z-index: 50;
+    opacity: .8;
   }
 
-  #hint{
-    position:fixed;
+  #hint {
+    position: fixed;
     bottom: 11%;
-    left:0; right:0;
-    text-align:center;
-    font-family:'Caveat', cursive;
+    left: 0; right: 0;
+    text-align: center;
+    font-family: 'Caveat', cursive;
     color: var(--rose-dark);
-    font-size:15px;
-    opacity:.65;
-    z-index:50;
+    font-size: 15px;
+    opacity: .65;
+    z-index: 50;
   }
 </style>
-<!-- کتابخانه افکت Confetti -->
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
@@ -182,94 +201,23 @@ html, body {
 </div>
 
 <script>
-// ---------- content, exact text ----------
 const pages = [
-{ html: `
-  <p>It all began on Twitter. Or as some say, X.</p>
-  <p>I came across this random boy whose general existence was completely unknown to me. He was just a pile of tweets and a cute profile.</p>
-  <p>But not just any pile of tweets.</p>
-`},
-{ html: `
-  <p>There was more than a pile of tweets. Like, a lot more than that. Like a whole second pile, emotionally speaking.</p>
-  <p>His tweets were yapping about the same things I wanted to yap about and saying things that were already somewhere in my mind, but somehow clearer.</p>
-`},
-{ html: `
-  <p>So I thought, &ldquo;well then, Let&rsquo;s slide in.&rdquo;</p>
-  <p>And I did.</p>
-  <p>I worked overtime to keep this guy around. First on Twitter, then Instagram, then Telegram. If there was an app where he existed, I was there too.</p>
-  <p>I was all over him.</p>
-`},
-{ html: `
-  <p>Asking questions. Gathering information. Navigating through his tweets. Sending endless reels on Instagram.</p>
-  <p>Playing games with him on Plato, letting him win so he could feel better about himself.</p>
-  <p>(pure lie. He absolutely crushed me at chess. Every Single Time.)</p>
-`},
-{ html: `
-  <p>ultimately, I asked him out on a date, a very bold and groundbreaking move.</p>
-  <p>And that&rsquo;s when I was informed that he was, in fact, in a relationship.</p>
-  <p>I thought, &ldquo;Okay. I didn&rsquo;t lose anything. Just several hours of strategic planning and a tiny bit of my self-esteem that I can repair by ignoring him.&rdquo;</p>
-`},
-{ html: `
-  <p>But he was genuinely fun to talk to and hard to ignore.</p>
-  <p>So I just let my self-esteem do the self-repair, and we continued with the endless reels.</p>
-  <p>It only took two years for someone to say something.</p>
-  <p>We went out.</p>
-`},
-{ html: `
-  <p>We saw each other in the flesh.</p>
-  <p>(mostly bones actually)</p>
-  <p>After two years of friendship, we finally met in person and talked about everyday life, random stuff, and how exciting it was to meet, while smoking cigarettes like two extremely cool and very mature adults.</p>
-  <p>we took turns going to the bathroom to pee</p>
-  <p>Back then, our bladders shared a connection we hadn&rsquo;t yet discovered.</p>
-`},
-{ html: `
-  <p>The &ldquo;Eight Ball Era&rdquo; began that night.</p>
-  <p>We played for hours, thinking we were getting better with every shot. Instead, we somehow managed to become worse.</p>
-  <p>At some point, we decided not to pursue professional eight-ball after reviewing the results of our efforts: &ldquo;ambitious but not exactly talented.&rdquo;</p>
-  <p>Instead, we added something else to our little nighttime meetups: PlayStation. The digital playground was kinder to us, and co-op games were less frustrating. At least for me.</p>
-`},
-{ html: `
-  <p>Things were already great. Then they got even better.</p>
-  <p>The Relationship Era.</p>
-  <p>Or, as I like to call it:<br>The Union of the Zeyds / Fusion of Bellybuttons</p>
-`},
-{ html: `
-  <p>After working our way through every game there was, we somehow unlocked the ultimate level: becoming zeydies.</p>
-  <p>Two years of calculated planning, mind games, manipulations, and a little bit of witchcraft paid off.</p>
-  <p>The prey has finally taken the bait.</p>
-`},
-{ html: `
-  <p>Being together was something special.</p>
-  <p>Even though we&rsquo;ve had our ups and downs&hellip;</p>
-  <p>(to be fair, most of the ups and downs were during sex.)</p>
-  <p>and our difficulties&hellip;</p>
-`},
-{ html: `
-  <p>The tragedy of being apart, which we got through with countless phone calls and saying &ldquo;I miss you&rdquo; about every twelve seconds. Not at all dramatic, considering the love I have for you in my heart.</p>
-  <p>I love what we have become, and the closeness we have discovered.</p>
-`},
-{ html: `
-  <p>Some honorable mentions of this year:</p>
-  <ol start="1">
-    <li>Lacey.george-lucas.net and chill</li>
-    <li>Making world-class sushi and steaks</li>
-    <li>Investigating a robbery case like two expert detectives</li>
-    <li>The massages, happy and unhappy-ending ones</li>
-    <li>The occasional, completely aimless wrestling on the bed</li>
-  </ol>
-`},
-{ html: `
-  <ol start="6">
-    <li>Popping pimples (gross but flattering)</li>
-    <li>Holding hands while driving</li>
-    <li>Falling asleep and waking up together, as far away from each other as physically possible</li>
-    <li>Your constant whistling, regardless of time, place, or situation</li>
-    <li>Our latest accomplishment: the quiet freedom of breaking wind in each other&rsquo;s company, with neither shame nor judgment.</li>
-  </ol>
-`}
+{ html: `<p>It all began on Twitter. Or as some say, X.</p><p>I came across this random boy whose general existence was completely unknown to me. He was just a pile of tweets and a cute profile.</p><p>But not just any pile of tweets.</p>`},
+{ html: `<p>There was more than a pile of tweets. Like, a lot more than that. Like a whole second pile, emotionally speaking.</p><p>His tweets were yapping about the same things I wanted to yap about and saying things that were already somewhere in my mind, but somehow clearer.</p>`},
+{ html: `<p>So I thought, &ldquo;well then, Let&rsquo;s slide in.&rdquo;</p><p>And I did.</p><p>I worked overtime to keep this guy around. First on Twitter, then Instagram, then Telegram. If there was an app where he existed, I was there too.</p><p>I was all over him.</p>`},
+{ html: `<p>Asking questions. Gathering information. Navigating through his tweets. Sending endless reels on Instagram.</p><p>Playing games with him on Plato, letting him win so he could feel better about himself.</p><p>(pure lie. He absolutely crushed me at chess. Every Single Time.)</p>`},
+{ html: `<p>ultimately, I asked him out on a date, a very bold and groundbreaking move.</p><p>And that&rsquo;s when I was informed that he was, in fact, in a relationship.</p><p>I thought, &ldquo;Okay. I didn&rsquo;t lose anything. Just several hours of strategic planning and a tiny bit of my self-esteem that I can repair by ignoring him.&rdquo;</p>`},
+{ html: `<p>But he was genuinely fun to talk to and hard to ignore.</p><p>So I just let my self-esteem do the self-repair, and we continued with the endless reels.</p><p>It only took two years for someone to say something.</p><p>We went out.</p>`},
+{ html: `<p>We saw each other in the flesh.</p><p>(mostly bones actually)</p><p>After two years of friendship, we finally met in person and talked about everyday life, random stuff, and how exciting it was to meet, while smoking cigarettes like two extremely cool and very mature adults.</p><p>we took turns going to the bathroom to pee</p><p>Back then, our bladders shared a connection we hadn&rsquo;t yet discovered.</p>`},
+{ html: `<p>The &ldquo;Eight Ball Era&rdquo; began that night.</p><p>We played for hours, thinking we were getting better with every shot. Instead, we somehow managed to become worse.</p><p>At some point, we decided not to pursue professional eight-ball after reviewing the results of our efforts: &ldquo;ambitious but not exactly talented.&rdquo;</p><p>Instead, we added something else to our little nighttime meetups: PlayStation. The digital playground was kinder to us, and co-op games were less frustrating. At least for me.</p>`},
+{ html: `<p>Things were already great. Then they got even better.</p><p>The Relationship Era.</p><p>Or, as I like to call it:<br>The Union of the Zeyds / Fusion of Bellybuttons</p>`},
+{ html: `<p>After working our way through every game there was, we somehow unlocked the ultimate level: becoming zeydies.</p><p>Two years of calculated planning, mind games, manipulations, and a little bit of witchcraft paid off.</p><p>The prey has finally taken the bait.</p>`},
+{ html: `<p>Being together was something special.</p><p>Even though we&rsquo;ve had our ups and downs&hellip;</p><p>(to be fair, most of the ups and downs were during sex.)</p><p>and our difficulties&hellip;</p>`},
+{ html: `<p>The tragedy of being apart, which we got through with countless phone calls and saying &ldquo;I miss you&rdquo; about every twelve seconds. Not at all dramatic, considering the love I have for you in my heart.</p><p>I love what we have become, and the closeness we have discovered.</p>`},
+{ html: `<p>Some honorable mentions of this year:</p><ol start="1"><li>Lacey.george-lucas.net and chill</li><li>Making world-class sushi and steaks</li><li>Investigating a robbery case like two expert detectives</li><li>The massages, happy and unhappy-ending ones</li><li>The occasional, completely aimless wrestling on the bed</li></ol>`},
+{ html: `<ol start="6"><li>Popping pimples (gross but flattering)</li><li>Holding hands while driving</li><li>Falling asleep and waking up together, as far away from each other as physically possible</li><li>Your constant whistling, regardless of time, place, or situation</li><li>Our latest accomplishment: the quiet freedom of breaking wind in each other&rsquo;s company, with neither shame nor judgment.</li></ol>`}
 ];
 
-// ---------- build cards ----------
 const deck = document.getElementById('deck');
 const sequence = [
   { kind: "cover" },
@@ -279,22 +227,17 @@ const sequence = [
 
 function cardInner(item) {
   if (item.kind === "cover") {
-    return `<div class="cover-face" style="flex:1;"><div class="cover-number">I</div></div>`;
+    return `<div class="cover-face"><div class="cover-number">I</div></div>`;
   }
-  
   if (item.kind === "closing") {
-    return `<div class="closing-face" style="flex:1; background-image:url('last.JPG'); background-size: cover; background-position: center; background-repeat: no-repeat;"></div>`;
+    return `<div class="closing-face"></div>`;
   }
-
   return `<div class="page-inner">${item.html}</div><div class="page-num">${item.num}</div>`;
 }
 
 sequence.forEach((item, idx) => {
   const el = document.createElement('div');
   el.className = 'card';
-  const z = sequence.length - idx;
-  el.style.zIndex = z;
-  el.dataset.zindex = z;
   el.dataset.idx = idx;
   el.innerHTML = cardInner(item);
   deck.appendChild(el);
@@ -305,67 +248,26 @@ const nextBtn = document.getElementById('nextBtn');
 const prevBtn = document.getElementById('prevBtn');
 const progress = document.getElementById('progress');
 const hint = document.getElementById('hint');
+
 let current = 0;
 const STACK_DEPTH = 3;
-let effectTriggered = false; // جلوگیری از اجرای تکراری انیمیشن
+let effectTriggered = false;
 
-// تابع اختصاصی افکت کارت پایانی
 function triggerEndCardEffects() {
   if (typeof confetti !== 'function') return;
-
-  // ۱. انیمیشن اصلی بارش confetti
-  confetti({
-    particleCount: 80,
-    spread: 70,
-    origin: { y: 0.6 },
-    colors: ['#c2637a', '#8a3a52', '#ffb703', '#ffffff']
-  });
-
-  // ۲. انیمیشن شلیک جانبی متناوب (۳ ثانیه)
-  const duration = 3 * 1000;
-  const animationEnd = Date.now() + duration;
-
-  const heartInterval = setInterval(() => {
-    const timeLeft = animationEnd - Date.now();
-    if (timeLeft <= 0) {
-      return clearInterval(heartInterval);
-    }
-
-    confetti({
-      particleCount: 3,
-      angle: 60,
-      spread: 55,
-      origin: { x: 0, y: 0.7 },
-      colors: ['#c2637a', '#ff4d6d', '#8a3a52']
-    });
-
-    confetti({
-      particleCount: 3,
-      angle: 120,
-      spread: 55,
-      origin: { x: 1, y: 0.7 },
-      colors: ['#c2637a', '#ff4d6d', '#8a3a52']
-    });
-  }, 250);
-}
-
-function exitTransform(dir) {
-  return `translateX(${dir * 160}%) translateY(22px) rotate(${dir * 16}deg)`;
-}
-
-function enterTransform() {
-  return `translateX(-145%) translateY(26px) rotate(-14deg)`;
+  confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 }, colors: ['#c2637a', '#8a3a52', '#ffb703', '#ffffff'] });
 }
 
 function layout() {
   cards.forEach((card, idx) => {
     card.classList.remove('top');
+    card.style.display = 'flex';
 
     if (idx < current) {
-      card.style.zIndex = 0;
-      card.style.opacity = '1';
+      card.style.zIndex = idx;
+      card.style.opacity = '0';
       const dir = Number(card.dataset.dir || 1);
-      card.style.transform = exitTransform(dir);
+      card.style.transform = `translateX(${dir * 150}%) rotate(${dir * 15}deg)`;
       card.style.pointerEvents = 'none';
     } else {
       const offset = idx - current;
@@ -376,7 +278,7 @@ function layout() {
         card.style.pointerEvents = 'none';
         card.style.transform = `translateY(${STACK_DEPTH * 10}px) scale(${1 - STACK_DEPTH * 0.04})`;
       } else {
-        card.style.opacity = offset === 0 ? '1' : String(1 - offset * 0.12);
+        card.style.opacity = offset === 0 ? '1' : String(1 - offset * 0.15);
         card.style.transform = `translateY(${offset * 10}px) scale(${1 - offset * 0.04})`;
         card.style.pointerEvents = offset === 0 ? 'auto' : 'none';
 
@@ -388,91 +290,50 @@ function layout() {
   });
 
   prevBtn.disabled = current === 0;
-  nextBtn.disabled = current === cards.length;
-  nextBtn.textContent = current === 0 ? "open ›" : (current === cards.length ? "the end" : "next ›");
-  progress.textContent = current === 0 ? "" : `card ${current} of ${cards.length}`;
-  hint.style.display = current === cards.length ? 'none' : 'block';
+  nextBtn.disabled = current === cards.length - 1;
+  nextBtn.textContent = current === 0 ? "open ›" : (current === cards.length - 1 ? "the end" : "next ›");
+  progress.textContent = current === 0 ? "" : `card ${current} of ${cards.length - 1}`;
+  hint.style.display = current === cards.length - 1 ? 'none' : 'block';
 
-  // بررسی رسیدن به کارت آخر و اجرای انیمیشن
-  if (current === sequence.length - 1) {
+  if (current === cards.length - 1) {
     if (!effectTriggered) {
       triggerEndCardEffects();
       effectTriggered = true;
     }
   } else {
-    effectTriggered = false; // ریست شدن حالت در صورت برگشت به کارت‌های قبل
+    effectTriggered = false;
   }
 }
 
 function dismissTop(direction) {
-  if (current >= cards.length) return;
+  if (current >= cards.length - 1) return;
   const card = cards[current];
   card.dataset.dir = direction;
-  card.classList.remove('dragging');
-  card.style.zIndex = 0;
-  card.style.transform = exitTransform(direction);
   current++;
   layout();
 }
 
 function restorePrev() {
   if (current === 0) return;
-  const frozenTop = current < cards.length ? cards[current] : null;
   current--;
-  const card = cards[current];
-
-  if (frozenTop) {
-    frozenTop.classList.remove('top', 'dragging');
-    frozenTop.style.pointerEvents = 'none';
-  }
-
-  card.classList.remove('dragging');
-  card.style.transition = 'none';
-  card.style.zIndex = 0;
-  card.style.transform = enterTransform();
-  
-  void card.offsetWidth;
-
-  card.style.transition = '';
   layout();
 }
 
-nextBtn.addEventListener('click', () => {
-  if (cards.length === 0) return;
-  if (current === cards.length) {
-    current = 0;
-    layout();
-  } else {
-    dismissTop(1);
-  }
-});
+nextBtn.addEventListener('click', () => dismissTop(1));
+prevBtn.addEventListener('click', restorePrev);
 
-prevBtn.addEventListener('click', () => {
-  if (cards.length === 0) return;
-  if (current === 0) {
-    current = cards.length - 1;
-    layout();
-  } else {
-    restorePrev();
-  }
-});
-
-let dragging = false, startX = 0, startY = 0, dx = 0, activeCard = null, prevCard = null;
+let dragging = false, startX = 0, startY = 0, dx = 0, activeCard = null;
 
 function pointerDown(e) {
-  if (cards.length === 0) return;
   const card = cards[current];
   if (!card || !card.classList.contains('top')) return;
   
   dragging = true;
   activeCard = card;
-  prevCard = current > 0 ? cards[current - 1] : null;
-
   const p = e.touches ? e.touches[0] : e;
-  startX = p.clientX; 
-  startY = p.clientY; 
+  startX = p.clientX;
+  startY = p.clientY;
   dx = 0;
-  
   activeCard.classList.add('dragging');
 }
 
@@ -481,84 +342,41 @@ function pointerMove(e) {
   const p = e.touches ? e.touches[0] : e;
   dx = p.clientX - startX;
   const dy = p.clientY - startY;
-  
-  if (Math.abs(dx) < Math.abs(dy)) return;
-  e.preventDefault();
 
-  if (dx > 0) {
-    activeCard.style.transform = '';
-    
-    if (prevCard && prevCard !== activeCard) {
-      prevCard.style.display = 'block';
-      prevCard.style.zIndex = '100';
-      prevCard.style.transition = 'none';
-      
-      const percent = -100 + Math.min((dx / window.innerWidth) * 100, 100);
-      const rot = (100 - (dx / window.innerWidth) * 100) * 0.05;
-      
-      prevCard.style.transform = `translateX(${percent}%) rotate(${-rot}deg)`;
-    }
-  } else {
-    if (prevCard && prevCard !== activeCard) {
-      prevCard.style.transform = '';
-      prevCard.style.zIndex = '';
-    }
-    const rot = dx / 18;
-    activeCard.style.transform = `translateX(${dx}px) rotate(${rot}deg)`;
-  }
+  if (Math.abs(dy) > Math.abs(dx) && Math.abs(dx) < 10) return;
+  if (e.cancelable) e.preventDefault();
+
+  const rot = dx / 16;
+  activeCard.style.transform = `translateX(${dx}px) translateY(${Math.abs(dx)*0.1}px) rotate(${rot}deg)`;
 }
 
 function pointerUp() {
   if (!dragging || !activeCard) return;
   dragging = false;
   activeCard.classList.remove('dragging');
-  
-  const threshold = 90;
-  
+
+  const threshold = 80;
+
   if (dx < -threshold) {
-    if (prevCard && prevCard !== activeCard) {
-      prevCard.style.transform = '';
-      prevCard.style.zIndex = '';
-    }
     dismissTop(-1);
   } else if (dx > threshold) {
-    if (prevCard && prevCard !== activeCard) {
-      prevCard.style.transition = 'transform 0.3s ease-out';
-      prevCard.style.transform = 'translateX(0)';
-      setTimeout(() => {
-        prevCard.style.transition = '';
-        prevCard.style.zIndex = '';
-        prevCard.style.display = '';
-        restorePrev();
-      }, 300);
-    } else {
+    if (current > 0) {
       restorePrev();
+    } else {
+      layout();
     }
-    activeCard.style.transform = '';
   } else {
-    activeCard.style.transform = '';
-    if (prevCard && prevCard !== activeCard) {
-      prevCard.style.transition = 'transform 0.2s ease-out';
-      prevCard.style.transform = 'translateX(-100%)';
-      setTimeout(() => {
-        prevCard.style.transition = '';
-        prevCard.style.zIndex = '';
-        prevCard.style.display = '';
-        layout();
-      }, 200);
-    }
+    layout();
   }
-  
+
   activeCard = null;
-  prevCard = null;
+  dx = 0;
 }
 
-// Mouse Events
 deck.addEventListener('mousedown', pointerDown);
 window.addEventListener('mousemove', pointerMove);
 window.addEventListener('mouseup', pointerUp);
 
-// Touch Events
 deck.addEventListener('touchstart', pointerDown, { passive: false });
 window.addEventListener('touchmove', pointerMove, { passive: false });
 window.addEventListener('touchend', pointerUp);
